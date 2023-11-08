@@ -1,154 +1,64 @@
-// Define canvas and context
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const canvasWidth = canvas.width;
-const canvasHeight = canvas.height;
+var canvas = document.getElementById('gameCanvas');
+var ctx = canvas.getContext('2d');
 
-// Bird properties
-const bird = {
-    x: 50,
-    y: canvasHeight / 2,
-    radius: 20,
-    velocity: 0,
-    gravity: 0.5,
+var bird = {
+ x: 50,
+ y: 50,
+ width: 20,
+ height: 20,
+ speed: 0
 };
 
-// Obstacles (pipes)
-const obstacles = [];
-const obstacleWidth = 50;
-const gap = 100;
-const obstacleSpeed = 2;
+var pipe = {
+ x: 200,
+ y: 0,
+ width: 50,
+ height: 200,
+ speed: 2
+};
 
-// Game variables
-let score = 0;
-let isGameOver = false;
+window.onkeydown = function(event) {
+ if (event.keyCode === 32) {
+   bird.speed = -5;
+ }
+};
 
-// Function to check for collisions
-function checkCollision() {
-    // Check if the bird hits the ground
-    if (bird.y + bird.radius > canvasHeight) {
-        endGame();
-    }
+function update() {
+ bird.speed += 0.5;
+ bird.y += bird.speed;
 
-    // Check if the bird hits any obstacles
-    for (let i = 0; i < obstacles.length; i++) {
-        if (isColliding(bird, obstacles[i])) {
-            endGame();
-            break;
-        }
-    }
+ pipe.x -= pipe.speed;
+
+ if (bird.y > canvas.height || bird.x < pipe.x + pipe.width && bird.x + bird.width > pipe.x &&
+   bird.y < pipe.y + pipe.height && bird.y + bird.height > pipe.y) {
+   gameOver();
+ }
 }
 
-// Function to check if two objects are colliding (circle-circle collision)
-function isColliding(obj1, obj2) {
-    const distance = Math.sqrt(
-        Math.pow(obj1.x - obj2.x, 2) + Math.pow(obj1.y - obj2.y, 2)
-    );
+function draw() {
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    return distance < obj1.radius + obj2.radius;
+ ctx.fillStyle = 'yellow';
+ ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+
+ ctx.fillStyle = 'green';
+ ctx.fillRect(pipe.x, pipe.y, pipe.width, pipe.height);
 }
 
-// Function to create new obstacles
-function createObstacle() {
-    const gapY = Math.random() * (canvasHeight - gap);
-    const obstacle = {
-        x: canvasWidth,
-        gapY: gapY,
-    };
-    obstacles.push(obstacle);
+function gameOver() {
+ bird.x = 50;
+ bird.y = 50;
+ bird.speed = 0;
+
+ pipe.x = 200;
+ pipe.y = 0;
+ pipe.speed = 2;
 }
 
-// Function to update the obstacles' positions and check for collisions
-function updateObstacles() {
-    for (let i = 0; i < obstacles.length; i++) {
-        obstacles[i].x -= obstacleSpeed;
-
-        // Remove obstacles that have gone off the screen
-        if (obstacles[i].x + obstacleWidth < 0) {
-            obstacles.splice(i, 1);
-            i--;
-        }
-    }
-
-    // Always create new obstacles
-    createObstacle();
-
-}
-
-// Function to update the score
-function updateScore() {
-    for (let i = 0; i < obstacles.length; i++) {
-        if (bird.x === obstacles[i].x + obstacleWidth) {
-            score++;
-        }
-    }
-}
-
-// Function to end the game
-function endGame() {
-    isGameOver = true;
-    // Perform actions to end the game, e.g., stop the game loop, display a game over screen.
-    // You can also reset the game for a new playthrough.
-}
-
-// Game loop
 function gameLoop() {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    if (!isGameOver) {
-        bird.velocity += bird.gravity;
-        bird.y += bird.velocity;
-
-        checkCollision();
-        updateObstacles();
-        updateScore();
-        drawBird();
-
-        for (let i = 0; i < obstacles.length; i++) {
-            drawObstacle(obstacles[i]);
-        }
-
-        requestAnimationFrame(gameLoop);
-    } else {
-        // Display game over screen with the score.
-        ctx.font = "30px Arial";
-        ctx.fillStyle = "red";
-        ctx.fillText("Game Over", canvasWidth / 2 - 80, canvasHeight / 2 - 20);
-        ctx.fillText("Score: " + score, canvasWidth / 2 - 40, canvasHeight / 2 + 20);
-    }
-    
-    // Create new obstacles periodically
-    if (score % 100 === 0) {
-        createObstacle();
-    }
+ update();
+ draw();
+ requestAnimationFrame(gameLoop);
 }
 
-// Function to draw the bird
-function drawBird() {
-    ctx.beginPath();
-    ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
-    ctx.fill();
-    ctx.closePath();
-}
-
-// Function to draw an obstacle
-// Function to draw an obstacle
-// Function to draw an obstacle
-function drawObstacle(obstacle) {
-    ctx.fillStyle = "green";
-    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY);
-    ctx.fillRect(obstacle.x, obstacle.gapY + gap, obstacleWidth, canvasHeight - obstacle.gapY - gap);
-}
-
-
-// Event listener for jumping the bird
-document.addEventListener("keydown", (event) => {
-    if (!isGameOver && (event.key === " " || event.key === "ArrowUp")) {
-        bird.velocity = -10; // Adjust the jump strength as needed
-    }
-});
-
-// Start the game loop and create the first obstacle
 gameLoop();
-createObstacle(); // Initial obstacle
