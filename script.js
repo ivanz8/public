@@ -62,7 +62,7 @@ function autoMoveSnake() {
         dy = 0;
         updateFoodPosition();
     }
-    requestAnimationFrame(autoMoveSnake);
+    setTimeout(autoMoveSnake, 200); // Adjust the delay (200ms for slower speed)
 }
 
 updateFoodPosition();
