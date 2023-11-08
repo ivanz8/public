@@ -30,6 +30,17 @@ function moveSnake() {
         updateFoodPosition();
     }
 }
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp' && dy === 0) {
+        changeDirection('up');
+    } else if (event.key === 'ArrowDown' && dy === 0) {
+        changeDirection('down');
+    } else if (event.key === 'ArrowLeft' && dx === 0) {
+        changeDirection('left');
+    } else if (event.key === 'ArrowRight' && dx === 0) {
+        changeDirection('right');
+    }
+});
 
 function changeDirection(direction) {
     switch (direction) {
