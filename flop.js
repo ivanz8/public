@@ -37,14 +37,15 @@ function update() {
  bird.y += bird.speed;
 
  for (var i = 0; i < pipes.length; i++) {
-  pipes[i].x -= pipes[i].speed;
+   pipes[i].x -= pipes[i].speed;
 
-  if (bird.y > canvas.height || bird.x < pipes[i].x + pipes[i].width && bird.x + bird.width > pipes[i].x &&
-    bird.y < pipes[i].y + pipes[i].height && bird.y + bird.height > pipes[i].y) {
-    gameOver();
-  }
+   if (bird.y > canvas.height || bird.x < pipes[i].x + pipes[i].width && bird.x + bird.width > pipes[i].x &&
+     bird.y < pipes[i].y + pipes[i].height && bird.y + bird.height > pipes[i].y) {
+     gameOver();
+   }
  }
 }
+
 
 function draw() {
  ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -53,8 +54,8 @@ function draw() {
  ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 
  for (var i = 0; i < pipes.length; i++) {
-  ctx.fillStyle = 'green';
-  ctx.fillRect(pipes[i].x, pipes[i].y, pipes[i].width, pipes[i].height);
+   ctx.fillStyle = 'green';
+   ctx.fillRect(pipes[i].x, pipes[i].y, pipes[i].width, pipes[i].height);
  }
 }
 
