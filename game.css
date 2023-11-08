@@ -1,3 +1,4 @@
+/* Updated CSS (style.css) with media queries */
 body {
     display: flex;
     justify-content: center;
@@ -26,4 +27,23 @@ body {
     width: 20px;
     height: 20px;
     background-color: #f00;
+}
+
+.controls {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Media query for screens with a max width of 600px (typical for mobile devices) */
+@media (max-width: 600px) {
+    .game-container {
+        width: 100%;
+        max-width: 300px;
+        height: 0;
+        padding-bottom: 100%;
+    }
+    .snake, .food {
+        width: 5%;
+        padding-bottom: 5%;
+    }
 }
