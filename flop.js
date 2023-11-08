@@ -134,10 +134,18 @@ function drawBird() {
 }
 
 // Function to draw an obstacle
+// Function to draw an obstacle
 function drawObstacle(obstacle) {
+    const pipeWidth = 50; // Adjust the width of the pipes as needed
     ctx.fillStyle = "green";
-    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY - gap / 2);
-    ctx.fillRect(obstacle.x, obstacle.gapY + gap / 2, obstacleWidth, canvasHeight - obstacle.gapY - gap / 2);
+    ctx.fillRect(obstacle.x, 0, pipeWidth, obstacle.gapY);
+    ctx.fillRect(obstacle.x, obstacle.gapY + gap, pipeWidth, canvasHeight - obstacle.gapY - gap);
+    
+    // Draw the pipe parts that connect the upper and lower sections
+    ctx.fillStyle = "#555"; // You can adjust the color
+    const pipeHeight = 10; // Adjust the height of the connecting parts as needed
+    ctx.fillRect(obstacle.x - 5, obstacle.gapY - pipeHeight, pipeWidth + 10, pipeHeight);
+    ctx.fillRect(obstacle.x - 5, obstacle.gapY + gap, pipeWidth + 10, pipeHeight);
 }
 
 // Event listener for jumping the bird
