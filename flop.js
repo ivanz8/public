@@ -22,7 +22,17 @@ var pipes = [
 ];
 
 var score = 0;
+var touchable = 'ontouchstart' in window;
 
+function start() {
+ bird.speed = -5;
+}
+
+if (touchable) {
+ canvas.addEventListener('touchstart', start);
+} else {
+ window.addEventListener('click', start);
+}
 window.onkeydown = function(event) {
  if (event.keyCode === 32) {
  bird.speed = -5;
