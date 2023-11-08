@@ -136,8 +136,8 @@ function drawBird() {
 // Function to draw an obstacle
 function drawObstacle(obstacle) {
     ctx.fillStyle = "green";
-    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY);
-    ctx.fillRect(obstacle.x, obstacle.gapY + gap, obstacleWidth, canvasHeight - obstacle.gapY - gap);
+    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY - gap / 2);
+    ctx.fillRect(obstacle.x, obstacle.gapY + gap / 2, obstacleWidth, canvasHeight - obstacle.gapY - gap / 2);
 }
 
 // Event listener for jumping the bird
