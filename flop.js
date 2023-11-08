@@ -9,7 +9,7 @@ var bird = {
  speed: 0,
  image: new Image()
 };
-bird.image.src = 'bird.png'; // Path to the bird image
+bird.image.src = 'bird.jpg'; // Path to the bird image
 
 var pipes = [
  {
