@@ -1,167 +1,113 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Floppy Bird</title>
+    <title>Flappy Bird</title>
     <style>
         /* CSS code for styling the game */
-        /* Set the background color */
         body {
-            background-color: #f8f8f8;
+            background-color: #87CEEB;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        /* Style the game container */
         .game-container {
+            position: relative;
             width: 400px;
             height: 600px;
-            margin: 0 auto;
-            border: 1px solid #ccc;
-            position: relative;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
             overflow: hidden;
         }
 
-        /* Style the bird */
         .bird {
-            width: 50px;
-            height: 50px;
-            background-color: #ff6f6f;
             position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #FF5733;
             bottom: 50%;
             left: 50px;
-            transform: translateY(50%);
             border-radius: 50%;
         }
 
-        /* Style the pipes */
         .pipe {
+            position: absolute;
             width: 80px;
             height: 400px;
-            background-color: #4caf50;
-            position: absolute;
+            background-color: #4CAF50;
             bottom: 0;
             border-radius: 10px;
         }
 
-        /* Style the score */
-        .score {
+        button#start-button {
+            margin-top: 20px;
             font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            position: absolute;
-            top: 20px;
-            left: 20px;
         }
     </style>
 </head>
 <body>
-    <canvas id="game-canvas" width="400" height="600"></canvas>
-
+    <div class="game-container">
+        <div class="bird"></div>
+        <div class="pipe"></div>
+    </div>
+    <button id="start-button">Start</button>
     <script>
-        // Code for initializing the game floppy bird
-
-        // Define the canvas element
-        const canvas = document.getElementById('game-canvas');
-        const ctx = canvas.getContext('2d');
-
-        // Set the canvas dimensions
-        canvas.width = 400;
-        canvas.height = 600;
-
-        // Define the bird object
-        const bird = {
-            x: 50,
-            y: canvas.height / 2,
-            width: 50,
-            height: 50,
-            color: 'yellow',
-            gravity: 0.5,
-            velocity: 0,
-            jump: 10,
-        };
-
-        // Define the game state
+        const bird = document.querySelector('.bird');
+        const pipe = document.querySelector('.pipe');
+        const startButton = document.getElementById('start-button');
         let gameStarted = false;
         let gameOver = false;
-        let score = 0;
+        let birdTop = 220;
+        let gravity = 2;
+        let pipeLeft = 400;
 
-        // Function to draw the bird
-        function drawBird() {
-            ctx.fillStyle = bird.color;
-            ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
-        }
-
-        // Function to update the bird's position
-        function updateBird() {
-            bird.velocity += bird.gravity;
-            bird.y += bird.velocity;
-        }
-
-        // Function to handle bird jumping
         function jump() {
-            bird.velocity = -bird.jump;
-        }
-
-        // Function to draw the score
-        function drawScore() {
-            ctx.fillStyle = 'white';
-            ctx.font = '24px Arial';
-            ctx.fillText(`Score: ${score}`, 10, 50);
-        }
-
-        // Function to update the game state
-        function updateGame() {
-            if (gameOver) {
-                handleGameOver();
-                return;
+            if (birdTop > 0) {
+                birdTop -= 20;
             }
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateBird();
-            drawBird();
-            drawScore();
-
-            requestAnimationFrame(updateGame);
+            bird.style.top = birdTop + 'px';
         }
 
-        // Function to start the game
         function startGame() {
-            gameStarted = true;
-            updateGame();
-        }
+            if (!gameStarted) {
+                gameStarted = true;
+                bird.style.animation = 'none';
+                pipe.style.animation = 'pipeMove 1.5s linear infinite';
+                startButton.style.display = 'none';
 
-        // Event listener for spacebar key press to make the bird jump
-        document.addEventListener('keydown', function (event) {
-            if (event.code === 'Space') {
-                if (!gameStarted) {
-                    startGame();
-                }
-                jump();
+                document.addEventListener('keydown', (event) => {
+                    if (event.code === 'Space' && !gameOver) {
+                        jump();
+                    }
+                });
+
+                const gameInterval = setInterval(() => {
+                    birdTop += gravity;
+                    bird.style.top = birdTop + 'px';
+                    pipeLeft -= 2;
+                    pipe.style.left = pipeLeft + 'px';
+
+                    if (birdTop <= 0 || birdTop >= 560 || (pipeLeft <= 80 && pipeLeft >= 0 && (birdTop <= 200 || birdTop >= 400))) {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        alert('Game Over');
+                        startButton.style.display = 'block';
+                        gameStarted = false;
+                        bird.style.animation = 'birdJump 0.5s';
+                        bird.style.top = '220px';
+                        pipe.style.animation = 'none';
+                        pipe.style.left = '400px';
+                        birdTop = 220;
+                        pipeLeft = 400;
+                    }
+                }, 10);
             }
-        });
-
-        // Function to reset the game
-        function resetGame() {
-            bird.y = canvas.height / 2;
-            bird.velocity = 0;
-            score = 0;
-            gameOver = false;
-            updateGame();
         }
 
-        // Function to handle game over
-        function handleGameOver() {
-            ctx.fillStyle = 'black';
-            ctx.font = '48px Arial';
-            ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
-            ctx.font = '24px Arial';
-            ctx.fillText('Press Enter to Restart', canvas.width / 2 - 120, canvas.height / 2 + 50);
-        }
-
-        // Event listener for enter key press to restart the game
-        document.addEventListener('keydown', function (event) {
-            if (event.code === 'Enter' && gameOver) {
-                resetGame();
-            }
-        });
+        startButton.addEventListener('click', startGame);
     </script>
 </body>
 </html>
