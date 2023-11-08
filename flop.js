@@ -66,7 +66,6 @@ function draw() {
  ctx.clearRect(0, 0, canvas.width, canvas.height);
  drawBird();
  drawPipes();
- requestAnimationFrame(draw);
 }
 
 function gameOver() {
@@ -81,4 +80,10 @@ function gameOver() {
  }
 }
 
-draw();
+function gameLoop() {
+ update();
+ draw();
+ requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
