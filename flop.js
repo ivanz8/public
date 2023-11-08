@@ -52,9 +52,10 @@ function isColliding(obj1, obj2) {
 function createObstacle() {
     const obstacle = {
         x: canvasWidth,
-        y: Math.random() * (canvasHeight - gap),
+        y: canvasHeight / 2 - gap / 2, // Set a fixed gap for the first obstacle
     };
     obstacles.push(obstacle);
+
 }
 
 // Function to update the obstacles' positions and check for collisions
