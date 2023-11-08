@@ -8,7 +8,7 @@ let foodX = 10;
 let foodY = 10;
 let score = 0;
 let speed = 1;
-let dx = 0;
+let dx = 1; // Initial direction (right)
 let dy = 0;
 
 function updateFoodPosition() {
@@ -32,6 +32,7 @@ function moveSnake() {
 }
 
 function handleKey(event) {
+    // Allow the player to change direction using arrow keys
     if (event.key === 'ArrowUp' && dy === 0) {
         dx = 0;
         dy = -1;
@@ -49,7 +50,7 @@ function handleKey(event) {
 
 document.addEventListener('keydown', handleKey);
 
-function gameLoop() {
+function autoMoveSnake() {
     moveSnake();
     if (snakeX >= 15 || snakeX < 0 || snakeY >= 15 || snakeY < 0) {
         alert('Game Over! Your Score: ' + score);
@@ -57,12 +58,12 @@ function gameLoop() {
         snakeY = 5;
         score = 0;
         speed = 1;
-        dx = 0;
+        dx = 1;
         dy = 0;
         updateFoodPosition();
     }
-    requestAnimationFrame(gameLoop);
+    requestAnimationFrame(autoMoveSnake);
 }
 
 updateFoodPosition();
-gameLoop();
+autoMoveSnake();
