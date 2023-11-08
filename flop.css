@@ -1,14 +1,13 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+ margin: 0;
+ background-color: #4EC0CA;
+ overflow: hidden;
 }
 
 #gameCanvas {
-    border: 2px solid #000;
-    background-color: #70c5ce; /* Background color for the game canvas */
-    /* Center the canvas on the page horizontally */
-    margin: 0 auto;
+ border: 1px solid #000;
 }
