@@ -50,12 +50,13 @@ function isColliding(obj1, obj2) {
 
 // Function to create new obstacles
 function createObstacle() {
+    const gapY = Math.random() * (canvasHeight - gap);
     const obstacle = {
         x: canvasWidth,
-        y: canvasHeight / 2 - gap / 2, // Set a fixed gap for the first obstacle
+        y: 0,
+        gapY: gapY,
     };
     obstacles.push(obstacle);
-
 }
 
 // Function to update the obstacles' positions and check for collisions
@@ -135,8 +136,8 @@ function drawBird() {
 // Function to draw an obstacle
 function drawObstacle(obstacle) {
     ctx.fillStyle = "green";
-    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.y);
-    ctx.fillRect(obstacle.x, obstacle.y + gap, obstacleWidth, canvasHeight - obstacle.y - gap);
+    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY);
+    ctx.fillRect(obstacle.x, obstacle.gapY + gap, obstacleWidth, canvasHeight - obstacle.gapY - gap);
 }
 
 // Event listener for jumping the bird
