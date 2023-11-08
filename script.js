@@ -2,12 +2,14 @@ const gameContainer = document.querySelector('.game-container');
 const snake = document.querySelector('.snake');
 const food = document.querySelector('.food');
 
-let snakeX = 10;
-let snakeY = 10;
-let foodX = 5;
-let foodY = 5;
+let snakeX = 5;
+let snakeY = 5;
+let foodX = 10;
+let foodY = 10;
 let score = 0;
 let speed = 1;
+let dx = 0;
+let dy = 0;
 
 function updateFoodPosition() {
     foodX = Math.floor(Math.random() * 15);
@@ -17,25 +19,46 @@ function updateFoodPosition() {
 }
 
 function moveSnake() {
-    snakeX += speed;
+    snakeX += dx;
+    snakeY += dy;
     snake.style.left = snakeX * 20 + 'px';
     snake.style.top = snakeY * 20 + 'px';
 
     if (snakeX === foodX && snakeY === foodY) {
         score++;
-        speed += 0.5;
+        speed += 0.2;
         updateFoodPosition();
     }
 }
+
+function handleKey(event) {
+    if (event.key === 'ArrowUp' && dy === 0) {
+        dx = 0;
+        dy = -1;
+    } else if (event.key === 'ArrowDown' && dy === 0) {
+        dx = 0;
+        dy = 1;
+    } else if (event.key === 'ArrowLeft' && dx === 0) {
+        dx = -1;
+        dy = 0;
+    } else if (event.key === 'ArrowRight' && dx === 0) {
+        dx = 1;
+        dy = 0;
+    }
+}
+
+document.addEventListener('keydown', handleKey);
 
 function gameLoop() {
     moveSnake();
     if (snakeX >= 15 || snakeX < 0 || snakeY >= 15 || snakeY < 0) {
         alert('Game Over! Your Score: ' + score);
-        snakeX = 10;
-        snakeY = 10;
+        snakeX = 5;
+        snakeY = 5;
         score = 0;
         speed = 1;
+        dx = 0;
+        dy = 0;
         updateFoodPosition();
     }
     requestAnimationFrame(gameLoop);
