@@ -4,8 +4,8 @@ var ctx = canvas.getContext('2d');
 var bird = {
  x: 50,
  y: 50,
- width: 20,
- height: 20,
+ width: 40,
+ height: 40,
  speed: 0,
  image: new Image()
 };
