@@ -70,10 +70,9 @@ function updateObstacles() {
         }
     }
 
-    // Create new obstacles when there are too few on the screen
-    if (obstacles.length < 5) { // Adjust the number as needed
-        createObstacle();
-    }
+    // Always create new obstacles
+    createObstacle();
+
 }
 
 // Function to update the score
