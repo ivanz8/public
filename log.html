@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .login-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-logo img {
+            width: 150px; /* Adjust the width as needed */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="login-logo">
+            <img src="https://t4.ftcdn.net/jpg/01/10/56/29/360_F_110562913_yoxjxxD24VidOWpbjfektgs2PV4EroPf.jpg" alt="Logo">
+            <p>Login</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="login.php">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+                            </div>
+                            <div class="form-group" >
+                                <label for="password">Password:</label>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                            </div>
+                            <input type="hidden" name="action" value="login">
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>
+                    </div>
+                </div>
+                <p class="mt-3 text-center">Don't have an account? <a href="signup.html">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
