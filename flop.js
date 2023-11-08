@@ -53,7 +53,6 @@ function createObstacle() {
     const gapY = Math.random() * (canvasHeight - gap);
     const obstacle = {
         x: canvasWidth,
-        y: 0,
         gapY: gapY,
     };
     obstacles.push(obstacle);
@@ -137,21 +136,9 @@ function drawBird() {
 // Function to draw an obstacle
 // Function to draw an obstacle
 function drawObstacle(obstacle) {
-    const pipeWidth = 50; // Adjust the width of the pipes as needed
-    const pipeSpacing = 100; // Adjust the vertical spacing between pipes
     ctx.fillStyle = "green";
-
-    // Draw the upper pipe
-    ctx.fillRect(obstacle.x, 0, pipeWidth, obstacle.gapY);
-    
-    // Draw the lower pipe
-    ctx.fillRect(obstacle.x, obstacle.gapY + pipeSpacing, pipeWidth, canvasHeight - (obstacle.gapY + pipeSpacing));
-
-    // Draw the connecting parts
-    ctx.fillStyle = "#555"; // You can adjust the color
-    const pipeHeight = 10; // Adjust the height of the connecting parts as needed
-    ctx.fillRect(obstacle.x - 5, obstacle.gapY, pipeWidth + 10, pipeHeight);
-    ctx.fillRect(obstacle.x - 5, obstacle.gapY + pipeSpacing - pipeHeight, pipeWidth + 10, pipeHeight);
+    ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.gapY);
+    ctx.fillRect(obstacle.x, obstacle.gapY + gap, obstacleWidth, canvasHeight - obstacle.gapY - gap);
 }
 
 
