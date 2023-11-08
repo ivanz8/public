@@ -31,24 +31,39 @@ function moveSnake() {
     }
 }
 
-function handleKey(event) {
-    // Allow the player to change direction using arrow keys
-    if (event.key === 'ArrowUp' && dy === 0) {
-        dx = 0;
-        dy = -1;
-    } else if (event.key === 'ArrowDown' && dy === 0) {
-        dx = 0;
-        dy = 1;
-    } else if (event.key === 'ArrowLeft' && dx === 0) {
-        dx = -1;
-        dy = 0;
-    } else if (event.key === 'ArrowRight' && dx === 0) {
-        dx = 1;
-        dy = 0;
+function changeDirection(direction) {
+    switch (direction) {
+        case 'up':
+            if (dy === 0) {
+                dx = 0;
+                dy = -1;
+            }
+            break;
+        case 'down':
+            if (dy === 0) {
+                dx = 0;
+                dy = 1;
+            }
+            break;
+        case 'left':
+            if (dx === 0) {
+                dx = -1;
+                dy = 0;
+            }
+            break;
+        case 'right':
+            if (dx === 0) {
+                dx = 1;
+                dy = 0;
+            }
+            break;
     }
 }
 
-document.addEventListener('keydown', handleKey);
+document.getElementById('up').addEventListener('click', () => changeDirection('up'));
+document.getElementById('down').addEventListener('click', () => changeDirection('down'));
+document.getElementById('left').addEventListener('click', () => changeDirection('left'));
+document.getElementById('right').addEventListener('click', () => changeDirection('right'));
 
 function autoMoveSnake() {
     moveSnake();
