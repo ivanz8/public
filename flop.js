@@ -69,6 +69,11 @@ function updateObstacles() {
             i--;
         }
     }
+
+    // Create new obstacles when there are too few on the screen
+    if (obstacles.length < 5) { // Adjust the number as needed
+        createObstacle();
+    }
 }
 
 // Function to update the score
