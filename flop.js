@@ -6,8 +6,10 @@ var bird = {
  y: 50,
  width: 20,
  height: 20,
- speed: 0
+ speed: 0,
+ image: new Image()
 };
+bird.image.src = 'bird.png'; // Path to the bird image
 
 var pipes = [
  {
@@ -18,6 +20,8 @@ var pipes = [
  speed: 2
  }
 ];
+
+var score = 0;
 
 window.onkeydown = function(event) {
  if (event.keyCode === 32) {
@@ -51,9 +55,17 @@ function update() {
 }
 
 function drawBird() {
- ctx.fillStyle = 'yellow';
- ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
+ ctx.drawImage(bird.image, bird.x, bird.y, bird.width, bird.height);
 }
+
+function draw() {
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
+ drawBird();
+ drawPipes();
+ ctx.fillStyle = 'black';
+ ctx.fillText('Score: ' + score, 10, 30);
+}
+
 
 function drawPipes() {
  for (var i = 0; i < pipes.length; i++) {
@@ -62,11 +74,7 @@ function drawPipes() {
  }
 }
 
-function draw() {
- ctx.clearRect(0, 0, canvas.width, canvas.height);
- drawBird();
- drawPipes();
-}
+
 
 function gameOver() {
  bird.x = 50;
