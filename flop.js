@@ -111,6 +111,11 @@ function gameLoop() {
         ctx.fillText("Game Over", canvasWidth / 2 - 80, canvasHeight / 2 - 20);
         ctx.fillText("Score: " + score, canvasWidth / 2 - 40, canvasHeight / 2 + 20);
     }
+    
+    // Create new obstacles periodically
+    if (score % 100 === 0) {
+        createObstacle();
+    }
 }
 
 // Function to draw the bird
@@ -138,4 +143,4 @@ document.addEventListener("keydown", (event) => {
 
 // Start the game loop and create the first obstacle
 gameLoop();
-createObstacle();
+createObstacle(); // Initial obstacle
