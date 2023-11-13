@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,48 +39,82 @@
             0% {
                 transform: translate(0, 0);
             }
+
             50% {
                 transform: translate(30px, -30px);
             }
+
             100% {
                 transform: translate(0, 0);
             }
         }
+
+        #image-container {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #image-container h3 {
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
 
-<div id="question-container">
-    <h1>Are you gay?</h1>
-</div>
+    <div id="question-container">
+        <h2>Are you gay?</h2>
+    </div>
 
-<div id="buttons-container">
-    <button class="button" onclick="alert('Yes')">Yes</button>
-    <button id="no-button" class="button" onmouseenter="runAway()">No</button>
-</div>
+    <div id="buttons-container">
+        <button class="button" onclick="showImage()">Yes</button>
+        <button id="no-button" class="button" onmouseenter="runAway()">No</button>
+    </div>
 
-<script>
-    function getRandomDistance() {
-        return Math.floor(Math.random() * 50) + 1; // Adjust the maximum distance as needed
-    }
+    <div id="image-container">
+        <img src="data:image/jpeg;base64,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" alt="Image">
+        <h3>Why are you Gae?</h3>
+    </div>
 
-    function runAway() {
-        const button = document.getElementById('no-button');
-        const boundingBox = button.getBoundingClientRect();
+    <audio id="audio" src="/gay.mp3"></audio>
 
-        const centerX = boundingBox.left + boundingBox.width / 2;
-        const centerY = boundingBox.top + boundingBox.height / 2;
+    <script>
+        function showImage() {
+            const imageContainer = document.getElementById('image-container');
+            const audio = document.getElementById('audio');
 
-        const angle = Math.random() * Math.PI * 2; // Random angle in radians
-        const distance = getRandomDistance();
+            imageContainer.style.display = 'block';
+            audio.play();
+        }
 
-        const newX = centerX + distance * Math.cos(angle);
-        const newY = centerY + distance * Math.sin(angle);
+        function getRandomDistance() {
+            return Math.floor(Math.random() * 50) + 1; // Adjust the maximum distance as needed
+        }
 
-        button.style.left = `${newX - boundingBox.width / 2}px`;
-        button.style.top = `${newY - boundingBox.height / 2}px`;
-    }
-</script>
+        function runAway() {
+            const button = document.getElementById('no-button');
+            const boundingBox = button.getBoundingClientRect();
+
+            const centerX = boundingBox.left + boundingBox.width / 2;
+            const centerY = boundingBox.top + boundingBox.height / 2;
+
+            const angle = Math.random() * Math.PI * 2; // Random angle in radians
+            const distance = getRandomDistance();
+
+            const newX = centerX + distance * Math.cos(angle);
+            const newY = centerY + distance * Math.sin(angle);
+
+            button.style.left = `${newX - boundingBox.width / 2}px`;
+            button.style.top = `${newY - boundingBox.height / 2}px`;
+        }
+    </script>
 
 </body>
+
 </html>
