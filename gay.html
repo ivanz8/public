@@ -67,7 +67,7 @@
         const centerY = boundingBox.top + boundingBox.height / 2;
 
         const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
-        const distance = 200; // Adjust the distance from the cursor
+        const distance = 2000; // Adjust the distance from the cursor
 
         const newX = centerX + distance * Math.cos(angle);
         const newY = centerY + distance * Math.sin(angle);
