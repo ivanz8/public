@@ -11,9 +11,12 @@
 </head>
 <body>
   <video id="webcam" width="640" height="480" autoplay></video>
-  
+  <canvas id="canvas" width="640" height="480"></canvas>
+
   <script>
     const video = document.getElementById('webcam');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
 
     // Check if the browser supports getUserMedia
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -38,8 +41,28 @@
     // Function to perform object detection on each video frame
     function detectFrame(model) {
       model.detect(video).then(predictions => {
-        // Log or display the predictions as needed
-        console.log('Predictions: ', predictions);
+        // Clear previous drawings
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw bounding boxes around detected objects
+        predictions.forEach(prediction => {
+          context.beginPath();
+          context.rect(
+            prediction.bbox[0],
+            prediction.bbox[1],
+            prediction.bbox[2],
+            prediction.bbox[3]
+          );
+          context.lineWidth = 2;
+          context.strokeStyle = 'green';
+          context.fillStyle = 'green';
+          context.stroke();
+          context.fillText(
+            `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+            prediction.bbox[0],
+            prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
+          );
+        });
 
         // Call detectFrame recursively to process the next frame
         requestAnimationFrame(() => detectFrame(model));
