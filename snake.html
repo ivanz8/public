@@ -1,23 +1,160 @@
-<!-- Updated HTML (index.html) -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <link rel="stylesheet" href="game.css">
+  <title>Snake Game</title>
+  <style>
+    #gameCanvas {
+      border: 1px solid black;
+    }
+  </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="snake"></div>
-        <div class="food"></div>
-    </div>
-    <div class="controls">
-        <button id="up">Up</button>
-        <button id="left">Left</button>
-        <button id="right">Right</button>
-        <button id="down">Down</button>
-    </div>
-    <script src="script.js"></script>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <button id="startButton">Start Game</button>
+  <select id="difficultySelect">
+    <option value="easy">Easy</option>
+    <option value="hard">Hard</option>
+  </select>
+
+  <script>
+    // Get the canvas element and its 2D rendering context
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Define the snake object
+    const snake = {
+      x: 10,
+      y: 10,
+      dx: 10,
+      dy: 0,
+      cells: [],
+      maxCells: 4
+    };
+
+    // Define the food object
+    const food = {
+      x: 0,
+      y: 0
+    };
+
+    // Define the score
+    let score = 0;
+
+    // Define the game speed
+    let gameSpeed = 100; // milliseconds
+
+    // Generate a random position for the food
+    function generateFood() {
+      food.x = Math.floor(Math.random() * (canvas.width / 10)) * 10;
+      food.y = Math.floor(Math.random() * (canvas.height / 10)) * 10;
+    }
+
+    // Game loop
+    function gameLoop() {
+      // Update snake position
+      snake.x += snake.dx;
+      snake.y += snake.dy;
+
+      // Wrap snake around the canvas
+      if (snake.x < 0) {
+        snake.x = canvas.width - 10;
+      } else if (snake.x >= canvas.width) {
+        snake.x = 0;
+      }
+      if (snake.y < 0) {
+        snake.y = canvas.height - 10;
+      } else if (snake.y >= canvas.height) {
+        snake.y = 0;
+      }
+
+      // Check if the snake eats the food
+      if (snake.x === food.x && snake.y === food.y) {
+        score++;
+        snake.maxCells++;
+        generateFood();
+      }
+
+      // Check for collision with the snake's body
+      for (let i = 1; i < snake.cells.length; i++) {
+        if (snake.cells[i].x === snake.x && snake.cells[i].y === snake.y) {
+          // Game over
+          alert("Game over! Your score: " + score);
+          snake.x = 10;
+          snake.y = 10;
+          snake.cells = [];
+          snake.maxCells = 4;
+          score = 0;
+          generateFood();
+        }
+      }
+
+      // Clear the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the snake
+      snake.cells.unshift({ x: snake.x, y: snake.y });
+      if (snake.cells.length > snake.maxCells) {
+        snake.cells.pop();
+      }
+      ctx.fillStyle = "green";
+      snake.cells.forEach(function(cell) {
+        ctx.fillRect(cell.x, cell.y, 10, 10);
+      });
+
+      // Draw the food
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, 10, 10);
+
+      // Draw the score
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 10, 20);
+
+      // Call the game loop again
+      setTimeout(gameLoop, gameSpeed);
+    }
+
+    // Handle keyboard input
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "ArrowUp" && snake.dy !== 10) {
+        snake.dx = 0;
+        snake.dy = -10;
+      } else if (event.key === "ArrowDown" && snake.dy !== -10) {
+        snake.dx = 0;
+        snake.dy = 10;
+      } else if (event.key === "ArrowLeft" && snake.dx !== 10) {
+        snake.dx = -10;
+        snake.dy = 0;
+      } else if (event.key === "ArrowRight" && snake.dx !== -10) {
+        snake.dx = 10;
+        snake.dy = 0;
+      }
+    });
+
+    // Start the game when the button is clicked
+    document.getElementById("startButton").addEventListener("click", function() {
+      // Get the selected difficulty level
+      const difficultySelect = document.getElementById("difficultySelect");
+      const selectedDifficulty = difficultySelect.value;
+
+      // Set the game speed based on the difficulty level
+      if (selectedDifficulty === "easy") {
+        gameSpeed = 100;
+        gameSpeed = 100; // milliseconds
+      } else if (selectedDifficulty === "hard") {
+        gameSpeed = 50; // milliseconds
+      }
+
+      // Generate the initial food item
+      generateFood();
+
+      // Start the game loop
+      gameLoop();
+    });
+
+    // Generate the initial food item
+    generateFood();
+  </script>
 </body>
 </html>
+    
