@@ -11,7 +11,7 @@
 </head>
 <body>
   <div style="position: relative; text-align: center;">
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <canvas id="canvas" width="640" height="480" style="position: absolute; top: 0; left: 0;"></canvas>
     <video id="webcam" width="640" height="480" autoplay style="position: absolute; top: 0; left: 0;"></video>
   </div>
 
@@ -45,6 +45,9 @@
       model.detect(video).then(predictions => {
         // Clear previous drawings
         context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the video frame
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         // Draw bounding boxes around detected objects
         predictions.forEach(prediction => {
