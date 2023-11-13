@@ -1,3 +1,8 @@
+To align the green boxes inside the frame of the camera, you can modify the `detectFrame` function. Specifically, you need to adjust the coordinates of the bounding boxes and the text labels.
+
+Here's an updated version of the code with the modifications:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,20 +52,20 @@
         // Draw bounding boxes around detected objects
         predictions.forEach(prediction => {
           context.beginPath();
-          context.rect(
-            prediction.bbox[0],
-            prediction.bbox[1],
-            prediction.bbox[2],
-            prediction.bbox[3]
-          );
+          // Adjust the coordinates of the bounding box to align with the frame
+          const x = prediction.bbox[0] + (canvas.width - video.videoWidth) / 2;
+          const y = prediction.bbox[1] + (canvas.height - video.videoHeight) / 2;
+          const width = prediction.bbox[2];
+          const height = prediction.bbox[3];
+          context.rect(x, y, width, height);
           context.lineWidth = 2;
           context.strokeStyle = 'green';
           context.fillStyle = 'green';
           context.stroke();
           context.fillText(
             `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
-            prediction.bbox[0],
-            prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
+            x,
+            y > 10 ? y - 5 : 10
           );
         });
 
@@ -71,3 +76,8 @@
   </script>
 </body>
 </html>
+```
+
+In this updated code, the `x` and `y` coordinates of the bounding boxes are adjusted by subtracting half of the difference between the canvas size and the video size. This ensures that the boxes are aligned with the frame of the camera. The text labels are also adjusted accordingly.
+
+Please give it a try and let me know if it works as expected.
