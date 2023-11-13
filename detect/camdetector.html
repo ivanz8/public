@@ -1,67 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
- <title>Camera Detector</title>
- <style>
-   body {
- font-family: Arial, sans-serif;
- margin: 0;
- padding: 0;
- background-color: #f4f4f4;
-}
-
-#dashboard {
- width: 80%;
- margin: 0 auto;
- padding: 20px;
- background-color: #fff;
- box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-}
-
-#dashboard h1 {
- text-align: center;
- color: #333;
-}
-
-#webcam {
- width: 100%;
- height: auto;
-}
-
-button {
- text-align: center
- display: block;
- width: 30%;
- padding: 10px;
- margin: 10px 0;
- background-color: #007BFF;
- color: #fff;
- border: none;
- border-radius: 5px;
- cursor: pointer;
-}
-
-button:hover {
- background-color: #0056b3;
-}
-
-canvas {
- display: block;
- width: 100%;
- height: auto;
-}
-
- </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webcam Object Detection</title>
+  <!-- Load TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <!-- Load COCO-SSD model -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 </head>
 <body>
- <div id="dashboard">
-   <h1>Camera Detector</h1>
-   <video id="webcam" autoplay playsinline></video>
-   <button id="webcamButton">Enable Webcam</button>
-   <canvas id="canvas"></canvas>
-   <button id="startButton">Start Detection</button>
-   <button id="stopButton">Stop Detection</button>
- </div>
- <script src="detect/app.js"></script>
+  <video id="webcam" width="640" height="480" autoplay></video>
+  
+  <script>
+    const video = document.getElementById('webcam');
+
+    // Check if the browser supports getUserMedia
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Access the webcam
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+          video.srcObject = stream;
+
+          // Load the COCO-SSD model
+          cocoSsd.load().then(model => {
+            // Perform object detection on each frame
+            detectFrame(model);
+          });
+        })
+        .catch((error) => {
+          console.error('Error accessing webcam:', error);
+        });
+    } else {
+      console.error('getUserMedia is not supported by this browser');
+    }
+
+    // Function to perform object detection on each video frame
+    function detectFrame(model) {
+      model.detect(video).then(predictions => {
+        // Log or display the predictions as needed
+        console.log('Predictions: ', predictions);
+
+        // Call detectFrame recursively to process the next frame
+        requestAnimationFrame(() => detectFrame(model));
+      });
+    }
+  </script>
 </body>
 </html>
