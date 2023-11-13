@@ -11,11 +11,15 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <script>
         // JavaScript code for the game goes here
         const canvas = document.getElementById("gameCanvas");
         const context = canvas.getContext("2d");
+
+        // Set canvas size based on device screen size
+        canvas.width = window.innerWidth > 480 ? 480 : window.innerWidth;
+        canvas.height = window.innerHeight > 320 ? 320 : window.innerHeight;
 
         // Game variables
         let birdX = 50;
@@ -103,6 +107,12 @@
 
         // Start the game
         gameLoop();
+
+        // Adjust canvas size on window resize
+        window.addEventListener("resize", function() {
+            canvas.width = window.innerWidth > 480 ? 480 : window.innerWidth;
+            canvas.height = window.innerHeight > 320 ? 320 : window.innerHeight;
+        });
     </script>
 </body>
 </html>
