@@ -87,6 +87,20 @@
             gameLoop();
         }
 
+        // Handle keyboard events
+        document.addEventListener("keydown", function(event) {
+            if (event.code === "Space" && gameRunning) {
+                velocity = -10;
+            }
+        });
+
+        // Handle touch event
+        canvas.addEventListener("touchstart", function(event) {
+            if (gameRunning) {
+                velocity = -10;
+            }
+        });
+
         // Start the game
         gameLoop();
     </script>
