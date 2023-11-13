@@ -19,18 +19,19 @@
 
         #buttons-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between; /* Adjust the space between buttons */
+            width: 200px; /* Adjust the container width */
             margin-top: 20px;
         }
 
         .button {
             padding: 10px 20px;
-            margin: 0 10px;
             cursor: pointer;
+            position: relative;
+            z-index: 1; /* Ensure buttons are above each other */
         }
 
         #no-button {
-            position: relative;
             animation: none;
         }
 
@@ -54,30 +55,30 @@
 </div>
 
 <div id="buttons-container">
-    <button class="button" onclick="alert('Yes you are gay')">Yes</button>
-    <button id="no-button" class="button" onmousemove="moveButton(event)" onmouseleave="resetButton()">No</button>
+    <button class="button" onclick="alert('Yes')">Yes</button>
+    <button id="no-button" class="button" onmouseenter="runAway()">No</button>
 </div>
 
 <script>
-    function moveButton(event) {
+    function getRandomDistance() {
+        return Math.floor(Math.random() * 50) + 1; // Adjust the maximum distance as needed
+    }
+
+    function runAway() {
         const button = document.getElementById('no-button');
         const boundingBox = button.getBoundingClientRect();
 
         const centerX = boundingBox.left + boundingBox.width / 2;
         const centerY = boundingBox.top + boundingBox.height / 2;
 
-        const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
-        const distance = 400; // Adjust the distance from the cursor
+        const angle = Math.random() * Math.PI * 2; // Random angle in radians
+        const distance = getRandomDistance();
 
         const newX = centerX + distance * Math.cos(angle);
         const newY = centerY + distance * Math.sin(angle);
 
-        button.style.transform = `translate(${newX - centerX}px, ${newY - centerY}px)`;
-    }
-
-    function resetButton() {
-        const button = document.getElementById('no-button');
-        button.style.transform = 'translate(0, 0)';
+        button.style.left = `${newX - boundingBox.width / 2}px`;
+        button.style.top = `${newY - boundingBox.height / 2}px`;
     }
 </script>
 
