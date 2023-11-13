@@ -19,20 +19,19 @@
 
         #buttons-container {
             display: flex;
-            justify-content: space-between; /* Adjust the space between buttons */
-            width: 200px; /* Adjust the container width */
+            justify-content: center;
             margin-top: 20px;
         }
 
         .button {
             padding: 10px 20px;
+            margin: 0 10px;
             cursor: pointer;
-            position: relative;
-            z-index: 1; /* Ensure buttons are above each other */
+            position: absolute;
         }
 
         #no-button {
-            animation: none;
+            animation: runAway 2s infinite;
         }
 
         @keyframes runAway {
