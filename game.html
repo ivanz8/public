@@ -1,10 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="flop.css">
+    <title>Flappy Bird</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
-    <script src="flop.js"></script>
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <script>
+        // JavaScript code for the game goes here
+        const canvas = document.getElementById("gameCanvas");
+        const context = canvas.getContext("2d");
+
+        // Game variables
+        let birdX = 50;
+        let birdY = canvas.height / 2;
+        let gravity = 1;
+        let velocity = 0;
+        let gap = 100;
+        let pipeWidth = 50;
+        let pipeHeight = 200;
+        let pipeX = canvas.width;
+        let pipeY = 0;
+        let score = 0;
+        let gameRunning = true;
+
+        // Game loop
+        function gameLoop() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw bird
+            context.fillStyle = "#FF0000";
+            context.fillRect(birdX, birdY, 20, 20);
+
+            // Draw pipes
+            context.fillStyle = "#00FF00";
+            context.fillRect(pipeX, pipeY, pipeWidth, pipeHeight);
+            context.fillRect(pipeX, pipeY + pipeHeight + gap, pipeWidth, canvas.height - pipeHeight - gap);
+
+            // Update bird position
+            velocity += gravity;
+            birdY += velocity;
+
+            // Update pipe position
+            pipeX -= 2;
+
+            // Check collision
+            if (birdY > canvas.height || birdY < 0 || (birdX + 20 > pipeX && birdX < pipeX + pipeWidth && (birdY < pipeY + pipeHeight || birdY + 20 > pipeY + pipeHeight + gap))) {
+                // Game over
+                gameRunning = false;
+                alert("Game over! Your score: " + score);
+                restartGame();
+            }
+
+            // Check if pipe passed
+            if (pipeX + pipeWidth < birdX) {
+                score++;
+                pipeX = canvas.width;
+                pipeY = Math.floor(Math.random() * (canvas.height - pipeHeight - gap));
+            }
+
+            // Draw score
+            context.fillStyle = "#000000";
+            context.font = "20px Arial";
+            context.fillText("Score: " + score, 10, 30);
+
+            if (gameRunning) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        // Restart the game
+        function restartGame() {
+            birdX = 50;
+            birdY = canvas.height / 2;
+            velocity = 0;
+            pipeX = canvas.width;
+            pipeY = 0;
+            score = 0;
+            gameRunning = true;
+            gameLoop();
+        }
+
+        // Start the game
+        gameLoop();
+    </script>
 </body>
 </html>
