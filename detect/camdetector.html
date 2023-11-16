@@ -1,113 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Webcam Object Detection</title>
-  <!-- Load TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-  <!-- Load COCO-SSD model -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-  <!-- Add styles for loading overlay -->
-  <style>
-    #loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    #loading-spinner {
-      border: 8px solid #f3f3f3;
-      border-top: 8px solid #3498db;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection Webcam</title>
+    <style>
+        body {
+            position: relative;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #2620df; /* Blue */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite; /* Add animation properties */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #webcam-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #webcam, #output {
+            
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #output {
+            z-index: 1;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
 </head>
 <body>
-  <!-- Loading overlay -->
-  <div id="loading-overlay">
-    <div id="loading-spinner"></div>
-  </div>
+    <div id="loading">
+        <div id="loader"></div>
+        <p>Loading, please wait...</p>
+    </div>
+    <div id="webcam-container">
+        <video id="webcam" width="640" height="480" style="display: none;"></video>
+        <canvas id="output" width="640" height="480" style="display: none;"></canvas>
+    </div>
+    <script>
+        async function setupCamera() {
+            const video = document.getElementById('webcam');
+            const stream = await navigator.mediaDevices.getUserMedia({ 'video': true });
+            video.srcObject = stream;
 
-  <!-- Webcam and canvas elements -->
-  <video id="webcam" width="640" height="480" autoplay></video>
-  <canvas id="canvas" width="640" height="480"></canvas>
+            return new Promise((resolve) => {
+                video.onloadedmetadata = () => {
+                    resolve(video);
+                };
+            });
+        }
 
-  <!-- JavaScript code -->
-  <script>
-    const video = document.getElementById('webcam');
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
+        async function detectFrame(video, model) {
+            const canvas = document.getElementById('output');
+            const ctx = canvas.getContext('2d');
 
-    // Show loading overlay
-    document.getElementById('loading-overlay').style.display = 'flex';
+            const predictions = await model.detect(video);
 
-    // Check if the browser supports getUserMedia
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      // Access the webcam
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => {
-          video.srcObject = stream;
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-          // Load the COCO-SSD model
-          cocoSsd.load().then(model => {
-            // Hide loading overlay once the model is loaded
-            document.getElementById('loading-overlay').style.display = 'none';
+            // Draw predictions on the canvas
+            predictions.forEach(prediction => {
+                const [x, y, width, height] = prediction.bbox;
 
-            // Perform object detection on each frame
-            detectFrame(model);
-          });
-        })
-        .catch((error) => {
-          console.error('Error accessing webcam:', error);
-        });
-    } else {
-      console.error('getUserMedia is not supported by this browser');
-    }
+                // Adjust the coordinates based on the ratio between the canvas and video dimensions
+                const adjustedX = x * canvas.width / video.videoWidth;
+                const adjustedY = y * canvas.height / video.videoHeight;
+                const adjustedWidth = width * canvas.width / video.videoWidth;
+                const adjustedHeight = height * canvas.height / video.videoHeight;
 
-    // Function to perform object detection on each video frame
-    function detectFrame(model) {
-      model.detect(video).then(predictions => {
-        // Clear previous drawings
-        context.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.rect(adjustedX, adjustedY, adjustedWidth, adjustedHeight);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'blue';
+                ctx.fillStyle = 'blue';
+                ctx.stroke();
+                ctx.fillText(
+                    `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
+                    adjustedX,
+                    adjustedY > 10 ? adjustedY - 5 : 10
+                );
+            });
 
-        // Draw bounding boxes around detected objects
-        predictions.forEach(prediction => {
-          context.beginPath();
-          context.rect(
-            prediction.bbox[0],
-            prediction.bbox[1],
-            prediction.bbox[2],
-            prediction.bbox[3]
-          );
-          context.lineWidth = 2;
-          context.strokeStyle = 'green';
-          context.fillStyle = 'green';
-          context.stroke();
-          context.fillText(
-            `${prediction.class} (${Math.round(prediction.score * 100)}%)`,
-            prediction.bbox[0],
-            prediction.bbox[1] > 10 ? prediction.bbox[1] - 5 : 10
-          );
-        });
+            requestAnimationFrame(() => {
+                detectFrame(video, model);
+            });
+        }
 
-        // Call detectFrame recursively to process the next frame
-        requestAnimationFrame(() => detectFrame(model));
-      });
-    }
-  </script>
+        async function loadObjectDetectionModel() {
+            const model = await cocoSsd.load();
+            return model;
+        }
+
+        async function runObjectDetection() {
+            const video = await setupCamera();
+            const model = await loadObjectDetectionModel();
+
+            // Hide the loading message and show the video and canvas
+            document.getElementById('loading').style.display = 'none';
+            video.style.display = 'block';
+            const canvas = document.getElementById('output');
+            canvas.style.display = 'block';
+
+            video.play();
+            detectFrame(video, model);
+        }
+
+        runObjectDetection();
+    </script>
 </body>
 </html>
