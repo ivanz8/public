@@ -19,7 +19,7 @@ session_start();
 
   <main>
 
-    <a href="index.html" class="button button-close" role="button"></a>
+    <a href="index.php" class="button button-close" role="button"></a>
 
     <section class="row no-gutter reverse-order">
       <div class="col-one-half middle padding">
