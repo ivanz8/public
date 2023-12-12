@@ -14,7 +14,7 @@ session_start();
   <link rel="icon" href="media/favicon.png">
   <link rel="mask-icon" href="media/favicon.svg" color="rgb(36,38,58)">
   <link rel="shortcut icon" href="media/favicon.png">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="/api/css/main.css">
 </head>
 <body class="page page-onboarding preload">
 
@@ -84,4 +84,3 @@ session_start();
   
 </body>
 </html>
-?>
