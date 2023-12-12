@@ -14,7 +14,7 @@ session_start();
   <link rel="icon" href="media/favicon.png">
   <link rel="mask-icon" href="media/favicon.svg" color="rgb(36,38,58)">
   <link rel="shortcut icon" href="media/favicon.png">
-  <link rel="stylesheet" href="/api/css/main.css">
+  <link rel="stylesheet" href="public/api/css/main.css">
 </head>
 <body class="page page-onboarding preload">
 
@@ -29,12 +29,12 @@ session_start();
           <p class="paragraph">Enter your details below.</p>
           <form class="login_form" name="login" action="" method="post">
             <div class="form-group">
-              <label for="email">Email:</label>
-              <input id="email" type="email" name="email">
+              <label for="email">Username:</label>
+              <input id="username" type="username" name="username">
             </div>
             <div class="form-group">
               <label for="password">Password:</label>
-              <input id="password" type="password" name="login-password">
+              <input id="password" type="password" name="password">
               <a href="forgot-password.html" class="form-help">Forgot password?</a>
             </div>
             <div class="form-group">
