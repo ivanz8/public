@@ -2,6 +2,7 @@
 include"connection.php";
 session_start();
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -19,17 +20,17 @@ session_start();
 
   <main>
 
-    <a href="index.php" class="button button-close" role="button"></a>
+    <a href="index.html" class="button button-close" role="button"></a>
 
     <section class="row no-gutter reverse-order">
       <div class="col-one-half middle padding">
         <div class="max-width-s">
           <h5>Welcome back.</h5>
           <p class="paragraph">Enter your details below.</p>
-          <form class ="login_form" name="login" action="" method="post"></form>
+          <form class="login_form" name="login" action="" method="post">
             <div class="form-group">
-              <label for="username">Username:</label>
-              <input id="username" type="username" name="username">
+              <label for="email">Email:</label>
+              <input id="email" type="email" name="email">
             </div>
             <div class="form-group">
               <label for="password">Password:</label>
@@ -40,51 +41,47 @@ session_start();
               <input id="remember-me" type="checkbox" name="remember-me">
               <label for="remember-me" class="checkbox">Remember Me</label>
             </div>
-            <a href="#" class="button button-primary full-width" role="button">Log In</a>
+            <a type="submit" name="submit" class="button button-primary full-width" role="button">Log In</a>
           </form>
-          
         </div>
+        <?php
+          if(isset($_POST['submit']))
+          {
+              $count=0;
+              $res=mysqli_query($db,"SELECT * FROM `student` WHERE password ='$_POST[password]' && username='$_POST[username]';");
+              $count=mysqli_num_rows($res);
+              if($count==0)
+              {
+                  ?>
+                  <script type="text/javascript">
+                    alert("The username or password doesn't match");
+                  </script>
+                  <?php
+              }
+              else
+              {
+                  $_SESSION['login_user']=$_POST['username'];   
+                  ?>
+                  <script type="text/javascript">
+                    window.location="Home.php";
+                  </script>
+                  <?php
+              }
+
+          }
+          ?>
         <div class="center max-width-s space-top">
           <span class="muted">Don't have an account? </span><a href="signup.html">Sign Up</a>
         </div>
       </div>
       <div class="col-one-half bg-image-04 featured-image"></div>
-      
     </section>
 
   </main>
-  
+
   <script src="js/jquery.min.js"></script>
   <script src="js/main.js"></script>
-
-  <?php
-  if(isset($_POST['submit']))
-  {
-      $count=0;
-      $res=mysqli_query($db,"SELECT * FROM `admin` WHERE password ='$_POST[password]' && username='$_POST[username]';");
-      $row=mysqli_fetch_assoc($res);
-      $count=mysqli_num_rows($res);
-      if($count==0)
-      {
-         ?>
-         <script type="text/javascript">
-           alert("The username or password doesn't match");
-         </script>
-          <?php
-      }
-      else
-      {
-         $_SESSION['login_user']=$_POST['username'];  
-         $_SESSION['pic']=$row['pic']; 
-         ?>
-         <script type="text/javascript">
-           window.location="pricing.php";
-         </script>
-          <?php
-      }
-
-  }
- ?>
   
 </body>
 </html>
+?>
