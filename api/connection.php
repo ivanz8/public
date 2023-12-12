@@ -12,15 +12,7 @@ $mysqli = new mysqli($host, $user, $password, $database, $port);
 // Check the Connection
 if ($mysqli->connect_error) {
     die("Connection failed: " . $mysqli->connect_error);
-} else {
-    echo "Connected successfully!";
-}
+} else
 
-// Optionally, you can set character set and other configurations if needed
-// $mysqli->set_charset("utf8");
 
-// Now, $mysqli can be used for executing queries and interacting with the database
-
-// Remember to close the connection when done
-// $mysqli->close();
 ?>
