@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearest Vet Clinic</title>
+    <!-- Leaflet Library for Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Leaflet Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <!-- jQuery for simplicity -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Find Nearest Vet Clinic</h1>
+    <div id="map"></div>
+    
+    <script>
+        let map;
+        let markers = [];
+        let routingControl;
+
+        // Initialize the map
+        function initializeMap(lat, lon) {
+            map = L.map('map').setView([lat, lon], 13);
+
+            // Add a tile layer to the map (OpenStreetMap tiles)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+        }
+
+        // Get user's current location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                initializeMap(lat, lon);
+
+                // Add a marker for user's location
+                const userMarker = L.marker([lat, lon]).addTo(map)
+                    .bindPopup('You are here.')
+                    .openPopup();
+
+                // Call the search function to find nearby clinics
+                findNearbyClinics(lat, lon, userMarker);
+            }, () => {
+                alert('Error getting location');
+            });
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+
+        // Function to find nearby clinics using Overpass API
+        function findNearbyClinics(lat, lon, userMarker) {
+            // Clear existing markers and routes
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            const query = `
+                [out:json];
+                (
+                    node["amenity"="veterinary"](around:3000,${lat},${lon});
+                    way["amenity"="veterinary"](around:3000,${lat},${lon});
+                    relation["amenity"="veterinary"](around:3000,${lat},${lon});
+                );
+                out center;
+            `;
+            const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+
+            $.getJSON(url, function(data) {
+                const elements = data.elements;
+                let nearestClinic = null;
+                let minDistance = Infinity;
+
+                elements.forEach(element => {
+                    const clinicLat = element.lat || element.center.lat;
+                    const clinicLon = element.lon || element.center.lon;
+                    const name = element.tags.name || 'Unnamed Clinic';
+
+                    const distance = getDistance(lat, lon, clinicLat, clinicLon);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        nearestClinic = { lat: clinicLat, lon: clinicLon, name: name };
+                    }
+
+                    const marker = L.marker([clinicLat, clinicLon]).addTo(map)
+                        .bindPopup(name);
+                    markers.push(marker);
+                });
+
+                if (nearestClinic) {
+                    routingControl = L.Routing.control({
+                        waypoints: [
+                            L.latLng(lat, lon),
+                            L.latLng(nearestClinic.lat, nearestClinic.lon)
+                        ],
+                        routeWhileDragging: true
+                    }).addTo(map);
+                }
+            });
+        }
+
+        // Function to calculate the distance between two coordinates
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in kilometers
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in kilometers
+        }
+
+        // Function to convert degrees to radians
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+    </script>
+</body>
+</html>
