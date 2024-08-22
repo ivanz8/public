@@ -83,24 +83,20 @@ function updateCalendar() {
         pnlDisplay.id = `pnl-${currentYear}-${currentMonth + 1}-${i}`;
         dateElement.appendChild(pnlDisplay);
 
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.id = `imageInput-${currentYear}-${currentMonth + 1}-${i}`;
-        fileInput.accept = 'image/*';
-        fileInput.style.display = 'none';
-        dateElement.appendChild(fileInput);
-
         const imagePreview = document.createElement('div');
         imagePreview.classList.add('image-preview');
         imagePreview.id = `imagePreview-${currentYear}-${currentMonth + 1}-${i}`;
         dateElement.appendChild(imagePreview);
 
-        dateElement.addEventListener('click', () => addPnl(i));
+        dateElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            addPnl(i);
+        });
+        
         datesContainer.appendChild(dateElement);
-
-        loadPnl(i);
     }
 
+    loadMonthData(currentYear, currentMonth);
     updateMonthlyStats();
 }
 
@@ -168,7 +164,7 @@ document.getElementById('savePnl').onclick = function() {
     set(ref(database, `tradingPnl/${dateKey}`), data)
     .then(() => {
         console.log(`Data saved successfully for ${dateKey}`);
-        loadPnl(currentDay);
+        updateDateCell(currentDay, data);
         updateMonthlyStats();
         document.getElementById('pnlModal').style.display = 'none';
     })
@@ -178,44 +174,56 @@ document.getElementById('savePnl').onclick = function() {
     });
 }
 
-function loadPnl(day) {
-    const pnlDisplay = document.getElementById(`pnl-${currentYear}-${currentMonth + 1}-${day}`);
-    const imagePreview = document.getElementById(`imagePreview-${currentYear}-${currentMonth + 1}-${day}`);
-    const dateKey = `${currentYear}-${currentMonth + 1}-${day}`;
+function loadMonthData(year, month) {
+    const startDate = `${year}-${month + 1}-1`;
+    const endDate = `${year}-${month + 1}-31`;
 
-    get(ref(database, `tradingPnl/${dateKey}`))
+    get(ref(database, 'tradingPnl'))
         .then((snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const pnl = parseFloat(data.pnl);
-                const color = pnl >= 0 ? 'green' : 'red';
-                pnlDisplay.textContent = `$${pnl.toFixed(2)}`;
-                pnlDisplay.style.color = color;
-
-                if (data.imageData) {
-                    imagePreview.innerHTML = `
-                        <img src="${data.imageData}" alt="Trade Screenshot" class="thumbnail">
-                        <div class="attachment-icon">📎</div>
-                        <div class="hover-preview">
-                            <img src="${data.imageData}" alt="Trade Screenshot">
-                        </div>
-                    `;
-                    imagePreview.onclick = () => openImageViewer(data.imageData, dateKey);
-                } else {
-                    imagePreview.innerHTML = '';
+            snapshot.forEach((childSnapshot) => {
+                const key = childSnapshot.key;
+                if (key >= startDate && key <= endDate) {
+                    const data = childSnapshot.val();
+                    const day = parseInt(key.split('-')[2]);
+                    updateDateCell(day, data);
                 }
-            } else {
-                pnlDisplay.textContent = '';
-                pnlDisplay.style.color = 'black';
-                imagePreview.innerHTML = '';
-            }
+            });
         })
         .catch((error) => {
-            console.error(`Error loading data for ${dateKey}:`, error);
-            pnlDisplay.textContent = `Error`;
-            pnlDisplay.style.color = 'red';
-            imagePreview.innerHTML = '';
+            console.error("Error loading month data:", error);
         });
+}
+
+function updateDateCell(day, data) {
+    const pnlDisplay = document.getElementById(`pnl-${currentYear}-${currentMonth + 1}-${day}`);
+    const imagePreview = document.getElementById(`imagePreview-${currentYear}-${currentMonth + 1}-${day}`);
+
+    if (data) {
+        const pnl = parseFloat(data.pnl);
+        const color = pnl >= 0 ? 'green' : 'red';
+        pnlDisplay.textContent = `$${pnl.toFixed(2)}`;
+        pnlDisplay.style.color = color;
+
+        if (data.imageData) {
+            imagePreview.innerHTML = `
+                <img src="${data.imageData}" alt="Trade Screenshot" class="thumbnail">
+                <div class="attachment-icon">📎</div>
+                <div class="hover-preview">
+                    <img src="${data.imageData}" alt="Trade Screenshot">
+                </div>
+            `;
+            imagePreview.onclick = (e) => {
+                e.stopPropagation();
+                openImageViewer(data.imageData, `${currentYear}-${currentMonth + 1}-${day}`);
+            };
+        } else {
+            imagePreview.innerHTML = '';
+        }
+    } else {
+        pnlDisplay.textContent = '';
+        pnlDisplay.style.color = 'black';
+        imagePreview.innerHTML = '';
+    }
 }
 
 function openImageViewer(imageData, dateKey) {
@@ -254,7 +262,7 @@ function deleteImage(dateKey) {
                         .then(() => {
                             console.log(`Image deleted successfully for ${dateKey}`);
                             closeImageViewer();
-                            loadPnl(parseInt(dateKey.split('-')[2])); // Reload the cell
+                            updateDateCell(parseInt(dateKey.split('-')[2]), data); // Reload the cell
                         })
                         .catch((error) => {
                             console.error(`Error deleting image for ${dateKey}:`, error);
@@ -289,12 +297,12 @@ function updateMonthlyStats() {
             snapshot.forEach((childSnapshot) => {
                 const key = childSnapshot.key;
                 if (key >= startDate && key <= endDate) {
-                    const pnl = parseFloat(childSnapshot.val());
-                    if (!isNaN(pnl)) {
-                        totalPnl += pnl;
+                    const data = childSnapshot.val();
+                    if (data && !isNaN(data.pnl)) {
+                        totalPnl += data.pnl;
                         daysTradedCount++;
-                        if (pnl !== 0) {
-                            tradedPnlTotal += pnl;
+                        if (data.pnl !== 0) {
+                            tradedPnlTotal += data.pnl;
                         }
                     }
                 }
@@ -312,3 +320,41 @@ function updateMonthlyStats() {
             console.error("Error calculating monthly stats:", error);
         });
 }
+
+// Add this to your existing JavaScript
+function addTouchSupport() {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const diffX = touchStartX - touchEndX;
+        const diffY = touchStartY - touchEndY;
+
+        // Only handle horizontal swipes that are longer than vertical movement
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+            if (diffX > 0) {
+                // Swipe left, go to next month
+                nextMonth();
+            } else {
+                // Swipe right, go to previous month
+                prevMonth();
+            }
+        }
+    }
+}
+
+// Call this function when your app initializes
+addTouchSupport();
