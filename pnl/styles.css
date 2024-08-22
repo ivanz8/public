@@ -392,3 +392,15 @@ input[type="number"],
 select {
     min-height: 44px;
 }
+
+.mobile-controls {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-controls {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+    }
+}
