@@ -309,29 +309,35 @@ function addTouchSupport() {
     let touchStartY = 0;
     let touchEndX = 0;
     let touchEndY = 0;
+    let touchStartTime = 0;
+    let touchEndTime = 0;
 
     document.addEventListener('touchstart', e => {
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
+        touchStartTime = new Date().getTime();
     }, { passive: true });
 
     document.addEventListener('touchend', e => {
         touchEndX = e.changedTouches[0].screenX;
         touchEndY = e.changedTouches[0].screenY;
+        touchEndTime = new Date().getTime();
         handleSwipe();
     }, { passive: true });
 
     function handleSwipe() {
         const diffX = touchStartX - touchEndX;
         const diffY = touchStartY - touchEndY;
+        const diffTime = touchEndTime - touchStartTime;
 
-        // Only handle horizontal swipes that are longer than vertical movement
-        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        // Check if the touch event was a swipe (fast and long enough)
+        if (Math.abs(diffX) > Math.abs(diffY) && 
+            Math.abs(diffX) > 50 && 
+            diffTime < 300 && 
+            diffTime > 50) {
             if (diffX > 0) {
-                // Swipe left, go to next month
                 nextMonth();
             } else {
-                // Swipe right, go to previous month
                 prevMonth();
             }
         }
