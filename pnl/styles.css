@@ -65,11 +65,61 @@ body {
     border: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    padding: 2px;
+    padding: 5px;
     cursor: pointer;
+    overflow: hidden;
+}
+
+.date-number {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.pnldisplay {
     font-size: 12px;
-    touch-action: manipulation; /* Improves touch responsiveness */
+    text-align: center;
+    margin-top: 2px;
+}
+
+.image-preview {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.image-preview .thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.attachment-icon {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 10px;
+}
+
+@media (min-width: 768px) {
+    .date {
+        padding: 8px;
+    }
+
+    .date-number {
+        font-size: 16px;
+    }
+
+    .pnldisplay {
+        font-size: 14px;
+    }
+
+    .attachment-icon {
+        font-size: 12px;
+    }
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -82,33 +132,11 @@ body {
     background-color: #f0f0f0;
 }
 
-.date-number {
-    text-align: right;
-}
-
-.pnldisplay {
-    font-size: 10px;
-    text-align: center;
-}
-
-.image-preview {
-    position: relative;
-    margin-top: 5px;
-    text-align: center;
-}
-
 .image-preview .thumbnail {
     max-width: 100%;
     max-height: 30px;
     object-fit: contain;
     cursor: pointer;
-}
-
-.attachment-icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 12px;
 }
 
 .hover-preview {
