@@ -26,23 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     currentMonth = today.getMonth();
     updateCalendar();
 
-    document.getElementById('prevMonth').addEventListener('click', () => {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        updateCalendar();
-    });
-
-    document.getElementById('nextMonth').addEventListener('click', () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        updateCalendar();
-    });
+    document.getElementById('prevMonth').addEventListener('click', prevMonth);
+    document.getElementById('nextMonth').addEventListener('click', nextMonth);
 
     // Test write operation
     set(ref(database, 'test'), 'Hello, Firebase!')
@@ -164,7 +149,7 @@ document.getElementById('savePnl').onclick = function() {
     set(ref(database, `tradingPnl/${dateKey}`), data)
     .then(() => {
         console.log(`Data saved successfully for ${dateKey}`);
-        updateDateCell(currentDay, data);
+        updateDateCell(parseInt(dateKey.split('-')[2]), data);
         updateMonthlyStats();
         document.getElementById('pnlModal').style.display = 'none';
     })
@@ -208,9 +193,6 @@ function updateDateCell(day, data) {
             imagePreview.innerHTML = `
                 <img src="${data.imageData}" alt="Trade Screenshot" class="thumbnail">
                 <div class="attachment-icon">📎</div>
-                <div class="hover-preview">
-                    <img src="${data.imageData}" alt="Trade Screenshot">
-                </div>
             `;
             imagePreview.onclick = (e) => {
                 e.stopPropagation();
@@ -358,3 +340,21 @@ function addTouchSupport() {
 
 // Call this function when your app initializes
 addTouchSupport();
+
+function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    updateCalendar();
+}
+
+function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    updateCalendar();
+}
