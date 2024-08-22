@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('prevMonth').addEventListener('click', prevMonth);
     document.getElementById('nextMonth').addEventListener('click', nextMonth);
+    document.getElementById('prevMonthMobile').addEventListener('click', prevMonth);
+    document.getElementById('nextMonthMobile').addEventListener('click', nextMonth);
 
     // Test write operation
     set(ref(database, 'test'), 'Hello, Firebase!')
