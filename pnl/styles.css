@@ -1,0 +1,283 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.calendar-header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.calendar {
+    padding: 20px;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.day {
+    text-align: center;
+    font-weight: bold;
+    color: #666;
+}
+
+.dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+.date {
+    aspect-ratio: 1;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.date:hover {
+    background-color: #f0f0f0;
+}
+
+.date-number {
+    font-size: 14px;
+    text-align: right;
+}
+
+.pnldisplay {
+    font-size: 12px;
+    text-align: center;
+}
+
+.image-preview {
+    position: relative;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.image-preview .thumbnail {
+    max-width: 100%;
+    max-height: 50px;
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.attachment-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+}
+
+.hover-preview {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 5px;
+}
+
+.hover-preview img {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+.image-preview:hover .hover-preview {
+    display: block;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+.calendar-footer div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.calendar-footer span {
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.image-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.image-viewer-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image-viewer-content img {
+    max-width: 100%;
+    max-height: calc(100vh - 60px);
+    object-fit: contain;
+}
+
+.viewer-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.viewer-controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.close-viewer {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.close-viewer:hover {
+    background-color: #e0e0e0;
+}
+
+.delete-image {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.delete-image:hover {
+    background-color: #ff3333;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#pnlInput, #imageInput, #savePnl {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+#imageInputArea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+#pasteArea {
+    width: 50%;
+    height: 50px;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#pasteArea:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+#imagePreview {
+    max-width: 100%;
+    max-height: 200px;
+    margin: 10px 0;
+}
+
+#imagePreview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
