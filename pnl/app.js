@@ -162,18 +162,16 @@ document.getElementById('savePnl').onclick = function() {
 }
 
 function loadMonthData(year, month) {
-    // Ensure month is fetched properly: month + 1 because JavaScript months are 0-indexed
-    const startDate = `${year}-${month + 1 < 10 ? '0' + (month + 1) : month + 1}-01`;
-    const endDate = `${year}-${month + 1 < 10 ? '0' + (month + 1) : month + 1}-31`;
+    const startDate = `${year}-${month + 1}-1`;
+    const endDate = `${year}-${month + 1}-31`;
 
     get(ref(database, 'tradingPnl'))
         .then((snapshot) => {
             snapshot.forEach((childSnapshot) => {
                 const key = childSnapshot.key;
-                // Properly check date range for the given month
                 if (key >= startDate && key <= endDate) {
                     const data = childSnapshot.val();
-                    const day = parseInt(key.split('-')[2]); // Extract day
+                    const day = parseInt(key.split('-')[2]);
                     updateDateCell(day, data);
                 }
             });
