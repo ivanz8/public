@@ -162,17 +162,19 @@ document.getElementById('savePnl').onclick = function() {
 }
 
 function loadMonthData(year, month) {
-    const startDate = `${year}-${month + 1}-1`;
-    const endDate = `${year}-${month + 1}-31`;
+    const monthStr = String(month + 1).padStart(2, '0');  // Ensures month is two digits
+    const startDate = `${year}-${monthStr}-01`;           // Start date is always day 1
+    const endDate = `${year}-${monthStr}-31`;             // End date is day 31 (max for all months)
 
     get(ref(database, 'tradingPnl'))
         .then((snapshot) => {
             snapshot.forEach((childSnapshot) => {
                 const key = childSnapshot.key;
+                // Compare the key with padded startDate and endDate
                 if (key >= startDate && key <= endDate) {
                     const data = childSnapshot.val();
                     const day = parseInt(key.split('-')[2]);
-                    updateDateCell(day, data);
+                    updateDateCell(day, data);            // Update the calendar cell
                 }
             });
         })
@@ -180,6 +182,7 @@ function loadMonthData(year, month) {
             console.error("Error loading month data:", error);
         });
 }
+
 
 function updateDateCell(day, data) {
     const pnlDisplay = document.getElementById(`pnl-${currentYear}-${currentMonth + 1}-${day}`);
