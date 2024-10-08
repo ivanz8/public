@@ -162,19 +162,22 @@ document.getElementById('savePnl').onclick = function() {
 }
 
 function loadMonthData(year, month) {
-    const monthStr = String(month + 1).padStart(2, '0');  // Ensures month is two digits
-    const startDate = `${year}-${monthStr}-01`;           // Start date is always day 1
-    const endDate = `${year}-${monthStr}-31`;             // End date is day 31 (max for all months)
+    // Correct the month for proper zero-based indexing (January is 0 in JavaScript Date)
+    const correctedMonth = month + 1; // This will give the proper month number
+    const startDate = `${year}-${correctedMonth.toString().padStart(2, '0')}-01`;
+    
+    // Dynamically calculate the last day of the month to handle different month lengths
+    const endDay = new Date(year, correctedMonth, 0).getDate(); // Last day of the month
+    const endDate = `${year}-${correctedMonth.toString().padStart(2, '0')}-${endDay}`;
 
     get(ref(database, 'tradingPnl'))
         .then((snapshot) => {
             snapshot.forEach((childSnapshot) => {
                 const key = childSnapshot.key;
-                // Compare the key with padded startDate and endDate
                 if (key >= startDate && key <= endDate) {
                     const data = childSnapshot.val();
                     const day = parseInt(key.split('-')[2]);
-                    updateDateCell(day, data);            // Update the calendar cell
+                    updateDateCell(day, data);
                 }
             });
         })
