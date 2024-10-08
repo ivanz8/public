@@ -162,13 +162,8 @@ document.getElementById('savePnl').onclick = function() {
 }
 
 function loadMonthData(year, month) {
-    // Correct the month for proper zero-based indexing (January is 0 in JavaScript Date)
-    const correctedMonth = month + 1; // This will give the proper month number
-    const startDate = `${year}-${correctedMonth.toString().padStart(2, '0')}-01`;
-    
-    // Dynamically calculate the last day of the month to handle different month lengths
-    const endDay = new Date(year, correctedMonth, 0).getDate(); // Last day of the month
-    const endDate = `${year}-${correctedMonth.toString().padStart(2, '0')}-${endDay}`;
+    const startDate = `${year}-${month + 1}-1`;
+    const endDate = `${year}-${month + 1}-31`;
 
     get(ref(database, 'tradingPnl'))
         .then((snapshot) => {
@@ -185,7 +180,6 @@ function loadMonthData(year, month) {
             console.error("Error loading month data:", error);
         });
 }
-
 
 function updateDateCell(day, data) {
     const pnlDisplay = document.getElementById(`pnl-${currentYear}-${currentMonth + 1}-${day}`);
